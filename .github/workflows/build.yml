@@ -19,7 +19,7 @@ jobs:
           go-version: 1.20.4
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/helloworld:latest /home/jmaradiaga/DevOps/DevOpsGYMBatch3/task7
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/helloworld:latest /home/jmaradiaga/DevOps/DevOpsGYMBatch3/task7/
 
       - name: Log in to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
