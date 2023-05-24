@@ -1,6 +1,5 @@
 name: TASK7 CI/CD
 
-name: CI/CD
 
 on:
   push:
