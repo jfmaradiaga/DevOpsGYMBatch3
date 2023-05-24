@@ -1,16 +1,20 @@
 stages:
   - build
+  - deploy
 
 build:
+  image: docker:latest
   stage: build
-  image: golang:1.20.4 # Replace with your desired Go version
   services:
     - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_DRIVER: overlay2
   script:
-    - go build -o hello .
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker build -t jfmaradiaga/helloworld:latest .
+
+deploy:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker push jfmaradiaga/helloworld:latest
