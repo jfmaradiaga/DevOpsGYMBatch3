@@ -3,3 +3,11 @@ on:
   push:
     branches:
       - main
+jobs:
+  ansible_docker_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Additional steps for Ansible and Docker
