@@ -3,11 +3,26 @@ on:
   push:
     branches:
       - main
+#Define Job:
 jobs:
   ansible_docker_job:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # Additional steps for Ansible and Docker
+#Install Ansible:
+      - name: Install Ansible
+        run: sudo apt-get -y install ansible
+#Docker config:
+      - name: Set up Docker
+        run: |
+          sudo apt-get -y install docker.io
+          sudo systemctl start docker
+# Run Ansible Playbook:
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i inventory.yml playbook.yml
+# Docker Run:
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8080:80 myapp:latest
