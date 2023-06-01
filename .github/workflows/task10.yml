@@ -36,12 +36,18 @@ jobs:
           sudo apt-get update
           sudo apt-get upgrade -y
 
-      - name: Install Ansible and Docker
+      - name: Install Ansible
         run: |
-          sudo apt-get install -y ansible docker.io
+          sudo apt-get install -y ansible
 
       - name: Run Ansible playbook
         run: |
           ansible-playbook playbook.yml \
-            -e "docker_image=jfmaradiaga/helloworld:latest" \
-            -e "ec2_public_ip=${{ secrets.EC2_PUBLIC_IP }}"
+            --inventory "${{ secrets.EC2_PUBLIC_IP }},"
+            --extra-vars "docker_image=jfmaradiaga/helloworld:latest ec2_public_ip=${{ secrets.EC2_PUBLIC_IP }}"
+            --connection ssh
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
