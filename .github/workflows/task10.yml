@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Ansible and Docker
         run: |
-         sudo apt-get install -y ansible docker.io
+         sudo apt-get install -y ansible
 
 
       - name: Run Ansible playbook
