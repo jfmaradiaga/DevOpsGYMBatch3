@@ -42,7 +42,7 @@ jobs:
 
 
       - name: Run Ansible playbook
-        uses: ansible/ansible-playbook-action@v2
+        uses: ansible/ansible-playbook@v2
         with:
          playbook: playbook.yml
          extra-vars: |
