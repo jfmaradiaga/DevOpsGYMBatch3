@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+
 env:
   ANSIBLE_HOST_KEY_CHECKING: false
 
