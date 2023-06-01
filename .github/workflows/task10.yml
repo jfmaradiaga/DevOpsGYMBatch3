@@ -29,12 +29,20 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-
-      - name: Install Ansible
+          
+      - name: Update package lists and upgrade packages
         run: |
-          sudo apt-get update
-          sudo apt install ansible -y
-          sudo apt install docker.io -y
+         sudo apt-get update
+         sudo apt-get upgrade -y
+
+      - name: Clear held packages
+        run: sudo apt-mark unhold $(dpkg --get-selections | grep hold | awk '{print $1}')
+
+
+      - name: Install Ansible and Docker
+        run: |
+         sudo apt-get install -y ansible docker.io
+
 
       - name: Run Ansible playbook
         run: |
