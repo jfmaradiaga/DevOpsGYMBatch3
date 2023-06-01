@@ -35,9 +35,6 @@ jobs:
          sudo apt-get update
          sudo apt-get upgrade -y
 
-      - name: Clear held packages
-        run: sudo apt-mark unhold $(dpkg --get-selections | grep hold | awk '{print $1}')
-
 
       - name: Install Ansible and Docker
         run: |
