@@ -1,0 +1,49 @@
+name: OCI Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Ansible
+      run: |
+        pip install ansible
+
+    - name: Configure OCI credentials
+      env:
+        OCI_USER: ${{ secrets.OCI_USER }}
+        OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+        OCI_TENANCY: ${{ secrets.OCI_TENANCY }}
+        OCI_REGION: ${{ secrets.OCI_REGION }}
+        OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.oci
+        echo -e "[DEFAULT]\nuser=${OCI_USER}\nfingerprint=${OCI_FINGERPRINT}\ntenancy=${OCI_TENANCY}\nregion=${OCI_REGION}\nkey_file=~/.oci/oci_api_key.pem\n" > ~/.oci/config
+        echo -e "${OCI_PRIVATE_KEY}" > ~/.oci/oci_api_key.pem
+        chmod go-rwx ~/.oci/config
+        chmod go-rw ~/.oci/oci_api_key.pem
+
+    - name: Install Docker
+      run: |
+        ansible localhost -m apt -a 'name=docker.io state=present' --connection=local
+
+    - name: Pull Docker image
+      run: |
+        ansible localhost -m docker_image -a 'name=jfmaradiaga/helloworld:latest state=pulled' --connection=local
+
+    - name: Deploy Docker container
+      run: |
+        ansible localhost -m docker_container -a 'name=helloworld image=jfmaradiaga/helloworld:latest state=started' --connection=local
