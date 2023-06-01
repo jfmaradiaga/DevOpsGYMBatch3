@@ -1,6 +1,7 @@
 - name: Install Docker
   become: true
   hosts: all
+  remote_user: ubuntu
   tasks:
     - name: Install Docker dependencies
       apt:
