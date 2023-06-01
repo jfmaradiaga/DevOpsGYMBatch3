@@ -1,0 +1,55 @@
+name: Deploy to EC2 with Ansible
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ANSIBLE_HOST_KEY_CHECKING: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          
+      - name: Update package lists and upgrade packages
+        run: |
+         sudo apt-get update
+         sudo apt-get upgrade -y
+
+
+      - name: Install Ansible and Docker
+        run: |
+         sudo apt-get install -y ansible
+
+
+      - name: Run Ansible playbook
+        run: |
+         ansible-playbook playbook.yml \
+          --inventory "localhost," \
+          --extra-vars "docker_image=jfmaradiaga/helloworld:latest ec2_public_ip=${{ secrets.EC2_PUBLIC_IP }}" \
+          --connection local
+        env:
+         AWS_DEFAULT_REGION: us-east-1
+         AWS_REGION: us-east-1
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+

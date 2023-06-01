@@ -27,7 +27,6 @@ sudo docker build -t jfmaradiaga/helloworld:latest /home/jmaradiaga/DevOps/DevOp
 
 # Log in to Docker Hub or your desired Docker registry
 echo "Logging in to the Docker registry..."
-###docker login -u jfmaradiaga -p dckr_pat_dp-A2vXuxznjjdyUWqiBnLlV2yU
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 # Push the Docker image to the Docker repository
