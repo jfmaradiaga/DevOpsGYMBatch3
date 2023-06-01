@@ -42,15 +42,14 @@ jobs:
 
 
       - name: Run Ansible playbook
-        uses: ansible/ansible-playbook@v2
+        uses: appleboy/ansible-action@v1
         with:
          playbook: playbook.yml
-         extra-vars: |
-          docker_image=jfmaradiaga/helloworld:latest
-          ec2_public_ip=${{ secrets.EC2_PUBLIC_IP }}
-          env:
-         AWS_DEFAULT_REGION: us-east-1
-         AWS_REGION: us-east-1
-         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
+         inventory: hosts.ini
+        env:
+          DOCKER_IMAGE: jfmaradiaga/helloworld:latest
+          EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
