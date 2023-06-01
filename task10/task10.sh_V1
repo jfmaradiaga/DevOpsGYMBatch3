@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Install Docker
+sudo apt-get update
+sudo apt-get install -y docker.io
+
+# Install Ansible
+sudo apt-get install -y ansible
+
+# Install Go
+sudo apt-get install -y golang
+
+# Compile the Go application
+cd /home/jmaradiaga/DevOps/DevOpsGYMBatch3/
+go build -o /home/jmaradiaga/DevOps/DevOpsGYMBatch3/hello /home/jmaradiaga/DevOps/DevOpsGYMBatch3/hello.go
+
+# Create the Docker image
+sudo docker build -t jfmaradiaga/helloworld:latest /home/jmaradiaga/DevOps/DevOpsGYMBatch3/
+
+# Push the Docker image to the Docker repository
+sudo docker push jfmaradiaga/helloworld:latest
