@@ -3,8 +3,6 @@
   remote_user: ubuntu  # Replace with the appropriate SSH user for your EC2 instance
   become: yes
   become_method: sudo
-  vars:
-    ansible_ssh_private_key_file: "key.pem"
 
   tasks:
     - name: Install Docker
@@ -12,11 +10,6 @@
         name: docker.io
         state: present
 
- # vars:
- #   ansible_ssh_private_key_file: ${{ secrets.SSH_PRIVATE_KEY }}
-
-
-  tasks:
     - name: Install Docker dependencies
       apt:
         name: 
