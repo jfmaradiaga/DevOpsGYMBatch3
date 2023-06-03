@@ -31,7 +31,6 @@
         state: present
       become: true
 
-
     - name: Install Docker engine
       apt:
         name: docker-ce
