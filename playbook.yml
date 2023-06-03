@@ -84,4 +84,4 @@
         image: jfmaradiaga/helloworld:latest
         state: started
         ports:
-          - "8080:80"
+          - "80:80"
