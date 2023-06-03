@@ -78,10 +78,12 @@
         state: started
         enabled: true
 
+#    - name: Run Docker container
+#      docker_container:
+#        name: helloworld
+#        image: jfmaradiaga/helloworld:latest
+#        state: started
+#        ports:
+#          - "8080:80"
     - name: Run Docker container
-      docker_container:
-        name: helloworld
-        image: jfmaradiaga/helloworld:latest
-        state: started
-        ports:
-          - "8080:80"
+      command: docker run -d -p 8080:8080 jfmaradiaga/helloworld:latest
