@@ -1,5 +1,5 @@
 # Use the official Golang image as the base image
-FROM golang:1.20.4-alpine
+FROM golang:alpine
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the Go application
-RUN go build -o hello
+RUN go build -o hello .
 
 # Set the command to run when the container starts
 CMD ["./hello"]
