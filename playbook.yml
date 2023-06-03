@@ -1,5 +1,5 @@
-- name: Install Docker
-  hosts: 3.86.92.128
+- name: Define Everything
+  hosts: 3.95.225.27
   remote_user: ubuntu  # Replace with the appropriate SSH user for your EC2 instance
   become: yes
   become_method: sudo
