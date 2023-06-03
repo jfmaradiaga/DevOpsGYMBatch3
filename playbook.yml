@@ -78,6 +78,7 @@
         state: started
         enabled: true
 
+
 - name: Pull and deploy Docker image
   hosts: 3.95.225.27
   tasks:
