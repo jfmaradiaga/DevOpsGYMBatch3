@@ -1,41 +1,71 @@
-- name: Define Everything
+- name: "Ubuntu - Install Docker"
   hosts: 3.95.225.27
-  remote_user: ubuntu  # Replace with the appropriate SSH user for your EC2 instance
+  remote_user: ubuntu
   become: yes
-  become_method: sudo
-
   tasks:
-    - name: Install Docker
+    - name: Update all packages
       apt:
-        name: docker.io
-        state: present
+        upgrade: dist
 
-    - name: Install Docker dependencies
+    - name: Ensure a list of packages are installed
       apt:
-        name: 
+        name: "{{ packages }}"
+        state: latest
+        update_cache: yes
+      vars:
+        packages:
+          - python3-pip
           - apt-transport-https
           - ca-certificates
           - curl
+          - gnupg
+          - lsb-release
           - software-properties-common
-      become: true
 
     - name: Add Docker GPG key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
-      become: true
 
     - name: Add Docker repository
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu hirsute stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
         state: present
-      become: true
 
-    - name: Install Docker engine
+    - name: Update apt cache
       apt:
-        name: docker-ce
-        state: present
-      become: true
+        update_cache: yes
+        cache_valid_time: 86400
+
+    - name: Install Docker packages
+      apt:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+
+    - name: Enable Docker service at startup
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Upgrade pip
+      shell: "python3 -m pip install pip --upgrade"
+
+    - name: Ensure Python pip packages are installed
+      pip:
+        name: "{{ packages }}"
+        executable: /usr/bin/pip3
+      vars:
+        packages:
+          - boto
+          - boto3
+          - docker-compose
+
 
     - name: Add user to the docker group
       user:
