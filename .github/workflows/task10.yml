@@ -19,14 +19,6 @@ jobs:
         with:
           ref: main
 
-      - name: Configure AWS credentials with SSH private key
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
       - name: Use Node.js 16
         uses: actions/setup-node@v2
         with:
@@ -36,6 +28,12 @@ jobs:
       - name: Install Ansible
         run: |
           sudo apt-get install -y ansible
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
 
       - name: Run Ansible playbook
         run: |
