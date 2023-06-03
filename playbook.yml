@@ -78,19 +78,3 @@
         state: started
         enabled: true
 
-
-- name: Pull and deploy Docker image
-  hosts: 3.95.225.27
-  tasks:
-    - name: Pull Docker image
-      docker_image:
-        name: jfmaradiaga/helloworld:latest
-        source: pull
-
-    - name: Run Docker container
-      docker_container:
-        name: helloworld
-        image: jfmaradiaga/helloworld:latest
-        state: started
-        ports:
-          - "8080:80"
