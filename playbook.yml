@@ -27,9 +27,10 @@
 
     - name: Add Docker repository
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu hirsute stable
         state: present
       become: true
+
 
     - name: Install Docker engine
       apt:
