@@ -87,6 +87,14 @@
         name: docker
         state: started
         enabled: true
+    ---
+    - name: "Pull Docker Image"
+      hosts: your_target_hosts
+      remote_user: ubuntu
+      become: true
+      tasks:
+        - name: Pull Docker Image
+          shell: docker pull jfmaradiaga/helloworld:latest
 
 #    - name: Run Docker container
 #      docker_container:
