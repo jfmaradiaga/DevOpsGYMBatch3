@@ -3,6 +3,16 @@
   remote_user: ubuntu
   become: yes
   tasks:
+    - name: Stop Docker containers
+      shell: docker stop $(docker ps -a -q)
+      become: true
+      ignore_errors: true
+
+    - name: Remove Docker containers
+      shell: docker rm $(docker ps -a -q)
+      become: true
+      ignore_errors: true
+
     - name: Update all packages
       apt:
         upgrade: dist
