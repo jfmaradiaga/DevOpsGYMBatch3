@@ -1,5 +1,5 @@
 - name: "Ubuntu - Install Docker"
-  hosts: 3.95.225.27
+  hosts: all
   remote_user: ubuntu
   become: yes
   tasks:
