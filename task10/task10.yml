@@ -1,0 +1,31 @@
+---
+- name: Install Docker and Build Image
+  hosts: all
+  become: true
+  tasks:
+    - name: Check Docker version
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Install Docker if not present
+      command: apt-get update && apt-get install -y docker.io
+      when: docker_version.rc != 0
+      changed_when: true
+
+    - name: Compile Go app
+      command: go build -o /home/jmaradiaga/DevOps/DevOpsGYMBatch3/hello /home/jmaradiaga/DevOps/DevOpsGYMBatch3/hello.go
+      changed_when: true
+
+    - name: Build Docker image
+      command: docker build -t jfmaradiaga/helloworld:latest /home/jmaradiaga/DevOps/DevOpsGYMBatch3/
+      changed_when: true
+
+    - name: Docker login
+      command: docker login -u jfmaradiaga -p dckr_pat_dp-A2vXuxznjjdyUWqiBnLlV2yU
+      changed_when: false
+
+    - name: Push Docker image
+      command: docker push jfmaradiaga/helloworld:latest
+      changed_when: true
+

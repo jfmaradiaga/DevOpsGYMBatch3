@@ -1,0 +1,21 @@
+---
+- name: Set up systemd service for Go application
+  hosts: 192.168.122.129
+  become: yes
+
+  tasks:
+    - name: Create systemd service file
+      template:
+        src: hello.service.j2
+        dest: /etc/systemd/system/task8.service
+
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start the hello service
+      systemd:
+        name: task8
+        enabled: yes
+        state: started
+

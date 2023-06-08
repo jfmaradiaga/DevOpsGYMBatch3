@@ -1,0 +1,23 @@
+---
+- name: Install Docker
+  hosts: target_host
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Check if Docker is installed
+      command: docker --version
+      register: docker_version
+      ignore_errors: true
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+      when: docker_version.rc != 0
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+

@@ -1,0 +1,39 @@
+---
+- name: Install Docker and push image
+  hosts: target_host
+  become: no
+  gather_facts: yes
+
+  tasks:
+    - name: Check if Docker is installed
+      command: docker --version
+      register: docker_version
+      ignore_errors: true
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+      when: docker_version.rc != 0
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+
+    - name: Compile Go app
+      command: go build -o hello hello.go
+      args:
+        chdir: /home/jmaradiaga/DevOps/DevOpsGYMBatch3
+
+    - name: Build Docker image
+      command: docker build -t jfmaradiaga/helloworld:latest .
+      args:
+        chdir: /home/jmaradiaga/DevOps/DevOpsGYMBatch3
+
+    - name: Log in to Docker registry
+      command: docker login -u jfmaradiaga -p dckr_pat_dp-A2vXuxznjjdyUWqiBnLlV2yU
+      become: no
+
+    - name: Push Docker image
+      command: docker push jfmaradiaga/helloworld:latest
