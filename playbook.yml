@@ -4,16 +4,17 @@
   become: yes
   tasks:
     - name: Stop existing container using port 8080
-      command:
-        cmd: docker stop $(docker ps -q --filter "publish=8080")
       become: yes
+      command:
+        cmd: docker stop $(docker ps -qf "publish=8080")
       ignore_errors: true
 
     - name: Remove existing container using port 8080
-      command:
-        cmd: docker rm $(docker ps -aq --filter "publish=8080")
       become: yes
+      command:
+        cmd: docker rm $(docker ps -aqf "publish=8080")
       ignore_errors: true
+
 
     - name: Update all packages
       apt:
