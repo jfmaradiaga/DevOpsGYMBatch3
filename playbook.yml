@@ -3,16 +3,16 @@
   remote_user: ubuntu
   become: yes
   tasks:
-    - name: Stop Docker containers
-      become: yes
+    - name: Stop existing container using port 8080
       command:
-        cmd: docker stop $(docker ps -a -q)
+        cmd: docker stop $(docker ps -q --filter "publish=8080")
+      become: yes
       ignore_errors: true
 
-    - name: Remove Docker containers
-      become: yes
+    - name: Remove existing container using port 8080
       command:
-        cmd: docker rm $(docker ps -a -q)
+        cmd: docker rm $(docker ps -aq --filter "publish=8080")
+      become: yes
       ignore_errors: true
 
     - name: Update all packages
@@ -85,12 +85,12 @@
       service:
         name: docker
         state: started
-        enabled: true
 
     - name: Pull Docker Image
       become: yes
       command:
         cmd: docker pull jfmaradiaga/helloworld:latest
+
 
     - name: Run Docker container
       become: yes
