@@ -4,26 +4,25 @@
   become: yes
   tasks:
     - name: Stop Docker containers
-      shell: docker stop $(docker ps -a -q)
-      become: true
+      become: yes
+      command:
+        cmd: docker stop $(docker ps -a -q)
       ignore_errors: true
 
     - name: Remove Docker containers
-      shell: docker rm $(docker ps -a -q)
-      become: true
+      become: yes
+      command:
+        cmd: docker rm $(docker ps -a -q)
       ignore_errors: true
 
     - name: Update all packages
       apt:
         upgrade: dist
+      become: yes
 
     - name: Ensure a list of packages are installed
       apt:
-        name: "{{ packages }}"
-        state: latest
-        update_cache: yes
-      vars:
-        packages:
+        name:
           - python3-pip
           - apt-transport-https
           - ca-certificates
@@ -31,6 +30,8 @@
           - gnupg
           - lsb-release
           - software-properties-common
+        state: latest
+        update_cache: yes
 
     - name: Add Docker GPG key
       apt_key:
@@ -49,13 +50,11 @@
 
     - name: Install Docker packages
       apt:
-        name: "{{ packages }}"
-        state: latest
-      vars:
-        packages:
+        name:
           - docker-ce
           - docker-ce-cli
           - containerd.io
+        state: latest
 
     - name: Enable Docker service at startup
       service:
@@ -64,17 +63,17 @@
         enabled: yes
 
     - name: Upgrade pip
-      shell: "python3 -m pip install pip --upgrade"
+      become: yes
+      command:
+        cmd: python3 -m pip install pip --upgrade
 
     - name: Ensure Python pip packages are installed
       pip:
-        name: "{{ packages }}"
-        executable: /usr/bin/pip3
-      vars:
-        packages:
+        name:
           - boto
           - boto3
           - docker-compose
+        executable: /usr/bin/pip3
 
     - name: Add user to the docker group
       user:
@@ -87,16 +86,14 @@
         name: docker
         state: started
         enabled: true
-    
-    - name: Pull Docker Image
-      shell: docker pull jfmaradiaga/helloworld:latest
 
-#    - name: Run Docker container
-#      docker_container:
-#        name: helloworld
-#        image: jfmaradiaga/helloworld:latest
-#        state: started
-#        ports:
-#          - "8080:80"
+    - name: Pull Docker Image
+      become: yes
+      command:
+        cmd: docker pull jfmaradiaga/helloworld:latest
+
     - name: Run Docker container
-      command: docker run -d -p 8080:8080 jfmaradiaga/helloworld:latest
+      become: yes
+      command:
+        cmd: docker run -d -p 8080:8080 jfmaradiaga/helloworld:latest
+
