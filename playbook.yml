@@ -3,27 +3,27 @@
   remote_user: ubuntu
   become: yes
   tasks:
-    - name: Stop existing container using port 8080
-      become: yes
-      command:
-        cmd: docker stop $(docker ps -qf "publish=8080")
+    - name: Stop Docker containers
+      shell: docker stop $(docker ps -a -q)
+      become: true
       ignore_errors: true
 
-    - name: Remove existing container using port 8080
-      become: yes
-      command:
-        cmd: docker rm $(docker ps -aqf "publish=8080")
+    - name: Remove Docker containers
+      shell: docker rm $(docker ps -a -q)
+      become: true
       ignore_errors: true
-
 
     - name: Update all packages
       apt:
         upgrade: dist
-      become: yes
 
     - name: Ensure a list of packages are installed
       apt:
-        name:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: yes
+      vars:
+        packages:
           - python3-pip
           - apt-transport-https
           - ca-certificates
@@ -31,8 +31,6 @@
           - gnupg
           - lsb-release
           - software-properties-common
-        state: latest
-        update_cache: yes
 
     - name: Add Docker GPG key
       apt_key:
@@ -51,11 +49,13 @@
 
     - name: Install Docker packages
       apt:
-        name:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
           - docker-ce
           - docker-ce-cli
           - containerd.io
-        state: latest
 
     - name: Enable Docker service at startup
       service:
@@ -64,17 +64,17 @@
         enabled: yes
 
     - name: Upgrade pip
-      become: yes
-      command:
-        cmd: python3 -m pip install pip --upgrade
+      shell: "python3 -m pip install pip --upgrade"
 
     - name: Ensure Python pip packages are installed
       pip:
-        name:
+        name: "{{ packages }}"
+        executable: /usr/bin/pip3
+      vars:
+        packages:
           - boto
           - boto3
           - docker-compose
-        executable: /usr/bin/pip3
 
     - name: Add user to the docker group
       user:
@@ -86,15 +86,17 @@
       service:
         name: docker
         state: started
-
+        enabled: true
+    
     - name: Pull Docker Image
-      become: yes
-      command:
-        cmd: docker pull jfmaradiaga/helloworld:latest
+      shell: docker pull jfmaradiaga/helloworld:latest
 
-
+#    - name: Run Docker container
+#      docker_container:
+#        name: helloworld
+#        image: jfmaradiaga/helloworld:latest
+#        state: started
+#        ports:
+#          - "8080:80"
     - name: Run Docker container
-      become: yes
-      command:
-        cmd: docker run -d -p 8080:8080 jfmaradiaga/helloworld:latest
-
+      command: docker run -d -p 8080:8080 jfmaradiaga/helloworld:latest
