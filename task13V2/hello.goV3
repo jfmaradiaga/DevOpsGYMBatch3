@@ -1,0 +1,20 @@
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: ./cli <host:port> <name>")
+		return
+	}
+
+	name := os.Args[2]
+
+	output := fmt.Sprintf("Hello %s!", name)
+	fmt.Println(output)
+}
+// to test this one first I have to compile it go build -o cli hello.go
+// ./cli localhost:8080 Andrey
