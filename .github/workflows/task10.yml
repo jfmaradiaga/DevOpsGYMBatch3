@@ -1,102 +1,47 @@
-- name: "Ubuntu - Install Docker"
-  hosts: all
-  remote_user: ubuntu
-  become: yes
-  tasks:
-    - name: Stop Docker containers
-      shell: docker stop $(docker ps -a -q)
-      become: true
-      ignore_errors: true
+name: Deploy to EC2 with Ansible
 
-    - name: Remove Docker containers
-      shell: docker rm $(docker ps -a -q)
-      become: true
-      ignore_errors: true
+on:
+  push:
+    branches:
+      - main
 
-    - name: Update all packages
-      apt:
-        upgrade: dist
 
-    - name: Ensure a list of packages are installed
-      apt:
-        name: "{{ packages }}"
-        state: latest
-        update_cache: yes
-      vars:
-        packages:
-          - python3-pip
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - gnupg
-          - lsb-release
-          - software-properties-common
+env:
+  ANSIBLE_HOST_KEY_CHECKING: false
 
-    - name: Add Docker GPG key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-    - name: Add Docker repository
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
-        state: present
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: main
 
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 86400
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
 
-    - name: Install Docker packages
-      apt:
-        name: "{{ packages }}"
-        state: latest
-      vars:
-        packages:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
+      - name: Install Ansible
+        run: |
+          sudo apt-get install -y ansible
 
-    - name: Enable Docker service at startup
-      service:
-        name: docker
-        state: started
-        enabled: yes
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+        #ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+         ssh-private-key: ${{ secrets.ubuntu_SSH_PRIVATE_KEY }}
 
-    - name: Upgrade pip
-      shell: "python3 -m pip install pip --upgrade"
-
-    - name: Ensure Python pip packages are installed
-      pip:
-        name: "{{ packages }}"
-        executable: /usr/bin/pip3
-      vars:
-        packages:
-          - boto
-          - boto3
-          - docker-compose
-
-    - name: Add user to the docker group
-      user:
-        name: ubuntu
-        groups: docker
-        append: yes
-
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
-        enabled: true
-    
-    - name: Pull Docker Image
-      shell: docker pull jfmaradiaga/helloworld:latest
-
-#    - name: Run Docker container
-#      docker_container:
-#        name: helloworld
-#        image: jfmaradiaga/helloworld:latest
-#        state: started
-#        ports:
-#          - "8080:80"
-    - name: Run Docker container
-      command: docker run -d -p 8080:8080 jfmaradiaga/helloworld:latest
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook playbook.yml \
+            --inventory "${{ secrets.EC2_PUBLIC_IP }}," \
+            --extra-vars "docker_image=jfmaradiaga/helloworld:latest ec2_public_ip=${{ secrets.EC2_PUBLIC_IP }}" \
+            --connection ssh
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
