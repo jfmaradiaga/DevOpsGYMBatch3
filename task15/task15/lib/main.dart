@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class HelloWorldScreen extends StatefulWidget {
-  const HelloWorldScreen({super.key});
-
   @override
   _HelloWorldScreenState createState() => _HelloWorldScreenState();
 }
@@ -27,7 +25,7 @@ class _HelloWorldScreenState extends State<HelloWorldScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hello World'),
+        title: Text('Hello World'),
       ),
       body: Center(
         child: Column(
@@ -35,16 +33,16 @@ class _HelloWorldScreenState extends State<HelloWorldScreen> {
           children: [
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Enter your name',
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: fetchData,
-              child: const Text('Submit'),
+              child: Text('Submit'),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(message),
           ],
         ),
