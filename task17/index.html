@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Task 14</title>
+</head>
+<body>
+	<form method="POST" action="/api/hello">
+		<label for="name">Name:</label>
+		<input type="text" id="name" name="name" required>
+		<input type="submit" value="Submit">
+	</form>
+</body>
+</html>
+<!--After building the binary using go build -o cli hello.go and starting the server with ./cli localhost:8080, you can open your web browser and visit http://localhost:8080 to access the HTML GUI.
+
+By entering a name in the input field and clicking Submit, the form will be submitted to the server, and the response "Hello, [name]!" will be displayed.-->
