@@ -6,10 +6,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-22.04
     steps:
-      - name: Install Flutter SDK
-        run: snap install flutter
       - uses: actions/checkout@v3
       - run: flutter build apk
       - uses: actions/upload-artifact@v3
@@ -19,7 +17,7 @@ jobs:
 
   deploy:
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
