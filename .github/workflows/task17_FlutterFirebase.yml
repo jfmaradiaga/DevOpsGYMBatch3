@@ -10,28 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v4
-        with:
-          flutter-version: "2.x" # Keep this line for Flutter installation, as it should work.
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v4
+      with:
+        flutter-version: '2.x' # Adjust to your Flutter version
 
-      - name: Configure Flutter
-        uses: flutter/setup-flutter@v2
-        with:
-          flutter-version: "2.x" # Use the official setup-flutter action
+    - name: Install dependencies
+      run: flutter pub get
 
-      - name: Install dependencies
-        run: flutter pub get
+    - name: Build APK
+      run: flutter build apk --release
 
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Deploy to Firebase
-        run: |
-          wget https://firebase.tools/bin/linux/latest -O firebase-tools
-          chmod +x firebase-tools
-          ./firebase-tools login:ci --token ${{ secrets.FIREBASE_TOKEN }}
-          ./firebase-tools deploy --only hosting
+    - name: Deploy to Firebase
+      run: |
+        wget https://firebase.tools/bin/linux/latest -O firebase-tools
+        chmod +x firebase-tools
+        ./firebase-tools login:ci --token ${{ secrets.FIREBASE_TOKEN }}
+        ./firebase-tools deploy --only hosting
