@@ -8,6 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Flutter SDK
+        run: sudo apt install flutter
       - uses: actions/checkout@v3
       - run: flutter build apk
       - uses: actions/upload-artifact@v3
@@ -24,4 +26,4 @@ jobs:
         with:
           name: android-debug.apk
           path: .
-      - run: firebase deploy --task17-df08a
+      - run: firebase deploy --project task17-df08a
