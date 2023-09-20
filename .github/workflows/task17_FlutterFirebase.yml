@@ -1,32 +1,27 @@
-name: Build and Deploy Android App
+name: Android Deployment
 
 on:
   push:
-    branches:
-      - main # Adjust this branch to match your main branch name
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - run: flutter build apk
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android-debug.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v4
-      with:
-        flutter-version: '2.x' # Adjust to your Flutter version
-
-    - name: Install dependencies
-      run: flutter pub get
-
-    - name: Build APK
-      run: flutter build apk --release
-
-    - name: Deploy to Firebase
-      run: |
-        wget https://firebase.tools/bin/linux/latest -O firebase-tools
-        chmod +x firebase-tools
-        ./firebase-tools login:ci --token ${{ secrets.FIREBASE_TOKEN }}
-        ./firebase-tools deploy --only hosting
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: android-debug.apk
+          path: .
+      - run: firebase deploy --task17-df08a
