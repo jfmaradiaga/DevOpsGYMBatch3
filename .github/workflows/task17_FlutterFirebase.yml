@@ -26,7 +26,7 @@ jobs:
         env:
           firebase_options_dart: ${{ secrets.FIREBASE_OPTION }}
         run: |
-          echo "$firebase_options_dart" > lib/main.dart
+          echo "$firebase_options_dart" > task17/task17/lib/main.dart
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
