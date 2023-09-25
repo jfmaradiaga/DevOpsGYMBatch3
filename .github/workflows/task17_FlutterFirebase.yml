@@ -33,11 +33,11 @@ jobs:
         with:
           channel: "stable"
 
-      - name: Get Flutter Dependencies
-        run: flutter pub get --disable-telemetry # Disable telemetry
-
-      - name: Build APK
-        run: flutter build apk
+      - name: Clean Flutter Cache and Get Dependencies
+        run: |
+          flutter clean
+          flutter pub get --disable-telemetry
+          flutter build apk
 
       - name: Upload APK artifact to Firebase App Distribution
         uses: actions/upload-artifact@v1
