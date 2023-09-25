@@ -33,14 +33,24 @@ jobs:
         with:
           channel: "stable"
 
+      - name: Find and store full path to pubspec.yaml
+        id: find_pubspec
+        run: |
+          find . -name "pubspec.yaml" -print -quit > pubspec_path
+          if [[ -s pubspec_path ]]; then
+            echo "Found pubspec.yaml: $(cat pubspec_path)"
+          else
+            echo "pubspec.yaml not found."
+            exit 1
+          fi
+
       - name: Set working directory to the Flutter project
         run: cd task17/task17
 
-      - name: Check if pubspec.yaml exists
-        run: if [ ! -f pubspec.yaml ]; then echo "pubspec.yaml file not found." && exit 1; fi
-
       - name: Get Flutter Dependencies
         run: |
+          FLUTTER_PROJECT_PATH=$(cat pubspec_path)
+          cd "$FLUTTER_PROJECT_PATH"
           flutter clean
           flutter pub get --disable-telemetry
           flutter build apk
