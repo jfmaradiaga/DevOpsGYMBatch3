@@ -33,7 +33,10 @@ jobs:
         with:
           channel: "stable"
 
-      - name: Clean Flutter Cache and Get Dependencies
+      - name: Change directory to Flutter project
+        run: cd task17/task17
+
+      - name: Get Flutter Dependencies
         run: |
           flutter clean
           flutter pub get --disable-telemetry
