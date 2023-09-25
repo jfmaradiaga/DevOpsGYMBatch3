@@ -33,8 +33,8 @@ jobs:
         with:
           channel: "stable"
 
-      - name: Get Flutter dependencies
-        run: flutter pub get
+      - name: Get Flutter Dependencies
+        run: flutter pub get --disable-telemetry # Disable telemetry
 
       - name: Build APK
         run: flutter build apk
