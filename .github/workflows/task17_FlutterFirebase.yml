@@ -20,24 +20,27 @@ jobs:
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+          echo "$GOOGLE_SERVICES_JSON" > task17/task17/android/app/google-services.json
 
       - name: Decode firebase_option
         env:
           firebase_options_dart: ${{ secrets.FIREBASE_OPTION }}
         run: |
-          echo "$firebase_options_dart" > lib/main.dart
+          echo "$firebase_options_dart" > task17/task17/lib/main.dart
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
 
-      - name: Get Flutter dependencies
-        run: flutter pub get
+      - name: Change directory to Flutter project
+        run: cd task17/task17
 
-      - name: Build APK
-        run: flutter build apk
+      - name: Get Flutter Dependencies
+        run: |
+          flutter clean
+          flutter pub get --disable-telemetry
+          flutter build apk
 
       - name: Upload APK artifact to Firebase App Distribution
         uses: actions/upload-artifact@v1
