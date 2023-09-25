@@ -33,7 +33,7 @@ jobs:
         with:
           channel: "stable"
 
-      - name: Change directory to Flutter project
+      - name: Set working directory to the Flutter project
         run: cd task17/task17
 
       - name: Get Flutter Dependencies
