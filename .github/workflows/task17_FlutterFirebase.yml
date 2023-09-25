@@ -36,9 +36,9 @@ jobs:
       - name: Set working directory to the Flutter project
         run: cd task17/task17
 
-      # **Change:** Add a step to check if the pubspec.yaml file exists.
+      # Add a step to check if the pubspec.yaml file exists.
       - name: Check if pubspec.yaml exists
-        run: if [ ! -f task17/task17/pubspec.yaml ]; then echo "pubspec.yaml file not found." && exit 1; fi
+        run: if [ ! -f pubspec.yaml ]; then echo "pubspec.yaml file not found." && exit 1; fi
 
       - name: Get Flutter Dependencies
         run: |
