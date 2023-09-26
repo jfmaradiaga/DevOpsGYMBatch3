@@ -34,6 +34,9 @@ jobs:
         with:
           channel: "stable"
 
+      - name: Set working directory to the Flutter project
+        run: cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17
+
       - name: Get Flutter Dependencies
         run: |
           flutter clean
