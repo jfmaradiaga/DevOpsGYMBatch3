@@ -38,9 +38,7 @@ jobs:
         run: dart --enable-analytics
 
       - name: Set working directory to the Flutter project
-        run: |
-          FLUTTER_PROJECT_PATH=$(find . -name "pubspec.yaml" -print -quit)
-          cd "$(dirname "$FLUTTER_PROJECT_PATH")"
+        run: cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17
 
       - name: Get Flutter Dependencies
         run: |
