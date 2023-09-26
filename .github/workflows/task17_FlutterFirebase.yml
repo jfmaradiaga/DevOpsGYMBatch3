@@ -36,8 +36,7 @@ jobs:
 
       - name: Set working directory to the Flutter project
         run: |
-          FLUTTER_PROJECT_PATH=$(task17/task17/)
-          FLUTTER_PROJECT_DIR=$(dirname "$FLUTTER_PROJECT_PATH")
+          FLUTTER_PROJECT_DIR="task17/task17/"
           cd "$FLUTTER_PROJECT_DIR"
 
       - name: Get Flutter Dependencies
