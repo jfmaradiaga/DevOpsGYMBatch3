@@ -32,10 +32,15 @@ jobs:
 
       - name: Get Flutter Dependencies
         run: |
-          cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17
           flutter clean
+          flutter config --no-analytics  # Disable telemetry
           flutter pub get --disable-telemetry
           flutter build apk
+          shell: /usr/bin/bash -e {0}
+        env:
+          JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/11.0.20-8/x64
+          FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.13.5-x64
+          PUB_CACHE: /opt/hostedtoolcache/flutter/stable-3.13.5-x64/.pub-cache
 
       - name: Upload APK artifact to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
