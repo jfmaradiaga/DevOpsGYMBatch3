@@ -36,7 +36,7 @@ jobs:
 
       - name: Set working directory to the Flutter project
         run: |
-          FLUTTER_PROJECT_PATH=$(cat pubspec_path)
+          FLUTTER_PROJECT_PATH=$(task17/task17/)
           FLUTTER_PROJECT_DIR=$(dirname "$FLUTTER_PROJECT_PATH")
           cd "$FLUTTER_PROJECT_DIR"
 
