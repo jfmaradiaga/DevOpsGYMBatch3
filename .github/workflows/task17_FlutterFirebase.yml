@@ -1,4 +1,4 @@
-name: Flutter Build and Distribute
+name: Flutter Build and Deploy
 
 on:
   push:
@@ -19,24 +19,13 @@ jobs:
           distribution: "zulu"
           java-version: "11"
 
-      - name: Decode google-services.json
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > task17/task17/android/app/google-services.json
-
-      - name: Decode firebase_option
-        env:
-          firebase_options_dart: ${{ secrets.FIREBASE_OPTION }}
-        run: echo "$firebase_options_dart" > task17/task17/lib/main.dart
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
 
       - name: Set working directory to the Flutter project
-        run: |
-          cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17  # Adjust the path to the root of your Flutter project
+        run: cd task17/task17
 
       - name: Get Flutter Dependencies
         run: |
@@ -44,13 +33,7 @@ jobs:
           flutter pub get --disable-telemetry
           flutter build apk
 
-      - name: Upload APK artifact to Firebase App Distribution
-        uses: actions/upload-artifact@v2
-        with:
-          name: release-apk
-          path: build/app/outputs/apk/release/app-release.apk
-
-      - name: Distribute artifact with Firebase
+      - name: Upload APK artifact to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.APPID }}
