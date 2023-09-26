@@ -27,9 +27,12 @@ jobs:
       - name: Set working directory to the Flutter project
         run: cd task17/task17
 
+      - name: show current directory
+        run: pwd
+
       - name: Get Flutter Dependencies
         run: |
-          cd /home/runner/work/DevOpsGYMBatch3/task17/task17
+          cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17
           flutter clean
           flutter pub get --disable-telemetry
           flutter build apk
