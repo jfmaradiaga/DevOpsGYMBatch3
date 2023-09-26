@@ -29,6 +29,7 @@ jobs:
 
       - name: Get Flutter Dependencies
         run: |
+          cd /home/runner/work/DevOpsGYMBatch3/task17/task17
           flutter clean
           flutter pub get --disable-telemetry
           flutter build apk
