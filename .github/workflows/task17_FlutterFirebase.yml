@@ -38,11 +38,17 @@ jobs:
           JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/11.0.20-8/x64
           FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.13.5-x64
           PUB_CACHE: /opt/hostedtoolcache/flutter/stable-3.13.5-x64/.pub-cache
-
+      
+      - name: show apk location
+        run: |
+          cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17/build/app/outputs/flutter-apk/
+          pwd
+          ls -lrt /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17/build/app/outputs/flutter-apk/app-release.apk
+        
       - name: Upload APK artifact to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.APPID }}
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: pre-tester
-          file: build/app/outputs/flutter-apk/app-release.apk
+          file: /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17/build/app/outputs/flutter-apk/app-release.apk
