@@ -34,8 +34,13 @@ jobs:
         with:
           channel: "stable"
 
+      - name: Enable Dart Analytics
+        run: dart --enable-analytics
+
       - name: Set working directory to the Flutter project
-        run: cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17
+        run: |
+          FLUTTER_PROJECT_PATH=$(find . -name "pubspec.yaml" -print -quit)
+          cd "$(dirname "$FLUTTER_PROJECT_PATH")"
 
       - name: Get Flutter Dependencies
         run: |
