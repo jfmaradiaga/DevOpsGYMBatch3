@@ -38,13 +38,6 @@ jobs:
         run: |
           cd /home/runner/work/DevOpsGYMBatch3/DevOpsGYMBatch3/task17/task17  # Adjust the path to the root of your Flutter project
 
-      - name: Check if pubspec.yaml exists
-        run: |
-          if [ ! -f pubspec.yaml ]; then
-            echo "pubspec.yaml file not found."
-            exit 1
-          fi
-
       - name: Get Flutter Dependencies
         run: |
           flutter clean
