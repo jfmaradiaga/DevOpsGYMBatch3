@@ -1,9 +1,3 @@
-resource "aws_ssm_parameter" "foo" {
-  name  = "foo"
-  type  = "String"
-  value = "barr"
-}
-
 terraform {
   required_providers {
     aws = {
@@ -11,44 +5,54 @@ terraform {
       version = "~> 5.0"
     }
   }
+  backend "s3" {
+    key = "aws/ec2-deploy/terraform.tfstate"
+  }
 }
 
 provider "aws" {
-    region = "us-east-1"
-    access_key = "AKIAXQHXIJL2GGYYDAWX"
-    secret_key = "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"
+  region = var.region
+}
+resource "aws_instance" "public_instance" {
+  ami                    = "ami-053b0d53c279acc90"
+  instance_type          = "t2.micro"
+  key_name               = aws_key_pair.key_pair.key_name
+  vpc_security_group_ids = [ aws_security_group.sg_ec2 ]
+  iam_instance_profile = aws_iam_instance_profile.ec2-profile.name
+  connection {
+    type = "ssh"
+    host = self.public_ip
+    user = "ubuntu"
+    private_key = var.private_key
+    timeout = "4m"
+  }
+
+  tags = {
+    Name = "task19"
+  }
 }
 
-// To Generate Private Key
-resource "tls_private_key" "rsa_4096" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+resource "aws_iam_instance_profile" "ec2-profile" {
+  name = "ec2-profile"
+  role = "EC2-ECR-AUTH"
 }
-
-variable "key_name" {
-  description = "Name of the SSH key pair"
-}
-
-// Create Key Pair for Connecting EC2 via SSH
-resource "aws_key_pair" "key_pair" {
-  key_name   = var.key_name
-  public_key = tls_private_key.rsa_4096.public_key_openssh
-}
-
-// Save PEM file locally
-resource "local_file" "private_key" {
-  content  = tls_private_key.rsa_4096.private_key_pem
-  filename = var.key_name
-}
-
 # Create a security group
 resource "aws_security_group" "sg_ec2" {
   name        = "sg_ec2"
   description = "Security group for EC2"
 
+  # SSH rule
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # HTTP (Port 80) rule
+  ingress {
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -61,18 +65,13 @@ resource "aws_security_group" "sg_ec2" {
   }
 }
 
-resource "aws_instance" "public_instance" {
-  ami                    = "ami-053b0d53c279acc90"
-  instance_type          = "t2.micro"
-  key_name               = aws_key_pair.key_pair.key_name
-  vpc_security_group_ids = [aws_security_group.sg_ec2.id]
+// Create Key Pair for Connecting EC2 via SSH
+resource "aws_key_pair" "key_pair" {
+  key_name   = var.key_name
+  public_key = var.public_key
+}
 
-  tags = {
-    Name = "task19"
-  }
-
-  root_block_device {
-    volume_size = 30
-    volume_type = "gp2"
-  }
+output "instance_public_ip" {
+  value = aws_instance.public_instance.public_ip
+  sensitive = true
 }
