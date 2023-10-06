@@ -17,7 +17,7 @@ resource "aws_instance" "public_instance" {
   ami                    = "ami-053b0d53c279acc90"
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.key_pair.key_name
-  vpc_security_group_ids = [ aws_security_group.sg_ec2 ]
+  vpc_security_group_ids = [ aws_security_group.maingroup.id ]
   iam_instance_profile = aws_iam_instance_profile.ec2-profile.name
   connection {
     type = "ssh"
@@ -37,9 +37,7 @@ resource "aws_iam_instance_profile" "ec2-profile" {
   role = "EC2-ECR-AUTH"
 }
 # Create a security group
-resource "aws_security_group" "sg_ec2" {
-  name        = "sg_ec2"
-  description = "Security group for EC2"
+resource "aws_security_group" "maingroup" {
 
   # SSH rule
   ingress {

@@ -19,7 +19,7 @@ resource "aws_instance" "public_instance" {
   ami                    = "ami-053b0d53c279acc90"
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.key_pair.key_name
-  vpc_security_group_ids = [aws_security_group.maingroup.id]
+  vpc_security_group_ids = [aws_security_group.sg_ec2]
   iam_instance_profile   = aws_iam_instance_profile.ec2-profile.name
 
   connection {
